@@ -9,7 +9,7 @@ minconf=0.1
 
 if __name__ == "__main__":
 
-	# trans=getTransactions(True,500)
+	# trans=getTransactions(True,10)
 	trans=getTransactions(False,0)
 
 

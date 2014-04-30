@@ -13,17 +13,22 @@ def getTransactions(returnPart,rows):
 
 def _getTransactions(DEBUG,returnPart,rows):
 	pass
-	csvFile = open('311-Dataset.csv', "rb", 0)
+	"""Set the dataset here"""	
+	csvFile = open('test2.csv', "rb", 0)
 	f = csv.reader(csvFile, delimiter=',')
 
 	transactions = []
 
 	counter=0
-	for i in f:
+	for row in f:
 		if counter==0:
 			pass
-		elif i[8] != '' and i[8] != 'N/A':
-			transactions.append({counter:frozenset([ i[8],i[5],i[0] ])})
+		else:
+			"""Set the fileds to process here, specified by range() or []
+			note that range(i,j) = [i, ... , j-1]
+			"""
+			nonNullFields=[row[i] for i in range(0,1)+[1,2] if (row[i]!='' and row[i]!='N/A')]
+			transactions.append({counter:frozenset(nonNullFields)})
 		counter=counter+1
 
 	if DEBUG:
