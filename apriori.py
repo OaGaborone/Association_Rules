@@ -1,11 +1,12 @@
 # from __future__ import print_function
+from __future__ import division
 from itertools import combinations
 from pprint import pprint
 
 def processTransactions(transactions,minsup,minconf):
 	"""Processes transactions, returns printable data structures
 	
-	TODO add more documentation
+	The results will be printed on screen directly.
 
 	"""
 	return _processTransactions(False,transactions,minsup,minconf)	
@@ -50,7 +51,7 @@ def _processTransactions(DEBUG,transactions,minsup,minconf):
 		numSurvive = len(dicts[0].keys())
 		pprint(dicts[0])
 		print("============================")
-		print("Above are the surviving ones")
+		print("Above is the surviving ones")
 		print("============================")
 		print("With min_sup of "+str(minsup)+", we have "+str(numItems)+" items, of which "+ str(numSurvive)+" survived, the # of transactions is "+str(transSize)+".")
 
@@ -71,25 +72,48 @@ def _processTransactions(DEBUG,transactions,minsup,minconf):
 
 
 	sizeMinusOne=0
-	# print inPreviousSet(frozenset(['10306', '10314']),dicts[sizeMinusOne],sizeMinusOne)
 	while len(d)!=0:
 		d={}
 		setList = dicts[sizeMinusOne].keys()
 		for setCandidate in set([k1|k2 for k1 in setList for k2 in setList if len(k1|k2)==sizeMinusOne+2]):
-			# print inPreviousSet(setCandidate,dicts[sizeMinusOne],sizeMinusOne)
 			if inPreviousSet(setCandidate,dicts[sizeMinusOne],sizeMinusOne):
 				candidateSup = getOccurrence(setCandidate)
-				# print candidateSup
 				if candidateSup >= minsup * transSize:
 					# print frozenset(setCandidate),candidateSup
 					d[frozenset(setCandidate)]=candidateSup
 
-
 		sizeMinusOne+=1
 		if len(d)!=0:
 			dicts.append(d)
-			# print dicts[sizeMinusOne]
-			print "largest item set size :", sizeMinusOne+1
+	# 
+	print "largest item set size :", sizeMinusOne
+
+
+	rules={}
+	for i in range(0,len(dicts)):
+		dict_=dicts[i]
+		for largeset in dict_.keys():
+			dividend=dict_[largeset]
+			for lSize in range(1,len(largeset)):
+				for lCandidate in set(combinations(largeset,lSize)):
+					conf=dividend/dicts[lSize-1][frozenset(lCandidate)]
+					print dividend,dicts[lSize-1][frozenset(lCandidate)]
+					if conf >= minconf:
+						rules[tuple([frozenset(lCandidate),largeset-frozenset(lCandidate)])]=conf
+	pprint(rules)
+
+
+
+	# for all dicts
+	# 	for each largeset in dict[i].keys()
+	# 		dividend = dict[i][largeset]
+	# 		for all possible length 1 to len(dict)-1
+	# 			generate subsets
+	# 			for each set in subsets
+	# 				conf = dividend/dicts[size-1][set]
+	# 				if conf>=minconf:
+	# 					dconf[[set,largeset-set]]=conf
+
 
 
 

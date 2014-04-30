@@ -4,8 +4,9 @@ from apriori import processTransactions
 from pprint import pprint
 
 
-minsup=0.05
-minconf=0.1
+"""With any min_sup >= 0.02 the program would return pretty fast."""
+minsup=0.02
+minconf=0.01
 
 if __name__ == "__main__":
 
