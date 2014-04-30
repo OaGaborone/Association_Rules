@@ -4,12 +4,12 @@ from apriori import processTransactions
 from pprint import pprint
 
 
-minsup=0.1
+minsup=0.05
 minconf=0.1
 
 if __name__ == "__main__":
 
-	# trans=getTransactions(True,10)
+	# trans=getTransactions(True,2000)
 	trans=getTransactions(False,0)
 
 
