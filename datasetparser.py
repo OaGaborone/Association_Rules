@@ -9,9 +9,9 @@ def getTransactions(returnPart,rows):
     	returnPart: if True returns part of the transactions, specified by rows
     	rows: ignored if returnPart is False
     """
-	return generateTransactions(False,returnPart,rows)
+	return _getTransactions(False,returnPart,rows)
 
-def generateTransactions(DEBUG,returnPart,rows):
+def _getTransactions(DEBUG,returnPart,rows):
 	pass
 	csvFile = open('311-Dataset.csv', "rb", 0)
 	f = csv.reader(csvFile, delimiter=',')
@@ -37,4 +37,4 @@ def generateTransactions(DEBUG,returnPart,rows):
 		return transactions
 
 if __name__ == "__main__":
-	generateTransactions(True,True,20)
+	_getTransactions(True,True,20)
