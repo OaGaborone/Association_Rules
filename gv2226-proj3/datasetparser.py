@@ -14,7 +14,7 @@ def getTransactions(returnPart,rows):
 def _getTransactions(DEBUG,returnPart,rows):
 	pass
 	"""Set the dataset here"""	
-	csvFile = open('test2.csv', "rb", 0)
+	csvFile = open('INTEGRATED-DATASET.csv', "rb", 0)
 	f = csv.reader(csvFile, delimiter=',')
 
 	transactions = []

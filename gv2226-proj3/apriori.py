@@ -1,6 +1,7 @@
 # from __future__ import print_function
 from __future__ import division
 from itertools import combinations
+import operator
 from pprint import pprint
 
 def processTransactions(transactions,minsup,minconf):
@@ -70,7 +71,7 @@ def _processTransactions(DEBUG,transactions,minsup,minconf):
 				return False
 		return True
 
-
+	"""Compute supports"""
 	sizeMinusOne=0
 	while len(d)!=0:
 		d={}
@@ -86,9 +87,9 @@ def _processTransactions(DEBUG,transactions,minsup,minconf):
 		if len(d)!=0:
 			dicts.append(d)
 	# 
-	print "largest item set size :", sizeMinusOne
+	# print "largest item set size :", sizeMinusOne
 
-
+	"""Compute rules"""
 	rules={}
 	for i in range(0,len(dicts)):
 		dict_=dicts[i]
@@ -97,27 +98,38 @@ def _processTransactions(DEBUG,transactions,minsup,minconf):
 			for lSize in range(1,len(largeset)):
 				for lCandidate in set(combinations(largeset,lSize)):
 					conf=dividend/dicts[lSize-1][frozenset(lCandidate)]
-					print dividend,dicts[lSize-1][frozenset(lCandidate)]
 					if conf >= minconf:
-						rules[tuple([frozenset(lCandidate),largeset-frozenset(lCandidate)])]=conf
-	pprint(rules)
+						rules[tuple([frozenset(lCandidate),largeset-frozenset(lCandidate)]+[dicts[lSize-1][frozenset(lCandidate)]])]=conf
+	# 
+	# pprint(rules)
 
-
-
-	# for all dicts
-	# 	for each largeset in dict[i].keys()
-	# 		dividend = dict[i][largeset]
-	# 		for all possible length 1 to len(dict)-1
-	# 			generate subsets
-	# 			for each set in subsets
-	# 				conf = dividend/dicts[size-1][set]
-	# 				if conf>=minconf:
-	# 					dconf[[set,largeset-set]]=conf
-
-
-
-
-
+	"""Rearange and print the support dicts[] and rules{} data structures"""
+	dSup={}
+	for dict_ in dicts:
+		dSup.update(dict_)
+	largeSetToPrint = sorted(dSup.iteritems(), key=operator.itemgetter(1))
+	print ("==Frequent itemsets (min_sup="+str(minsup*100)+"%)")
+	for line in reversed(largeSetToPrint):
+		print (str(list(line[0]))+", "+str(line[1]/transSize*100)+"%")
+	print ('')
+	rulesToPrint = sorted(rules.iteritems(), key=operator.itemgetter(1))
+	print ("==High-confidence association rules (min_conf="+str(minconf*100)+"%)")
+	for line in reversed(rulesToPrint):
+		left=line[0][0]
+		right=line[0][1]
+		ruleStr="["
+		for i in range(0,len(left)):
+			if i==len(left)-1:
+				ruleStr=ruleStr+str(list(left)[i])+"] => ["	
+			else:
+				ruleStr=ruleStr+str(list(left)[i])+", "
+		for i in range(0,len(right)):
+			if i==len(right)-1:
+				ruleStr=ruleStr+str(list(right)[i])+"] (Conf: "	
+			else:
+				ruleStr=ruleStr+str(list(right)[i])+", "
+		ruleStr=ruleStr+str(line[1]*100)+"%, Supp: "+str(line[0][2]/transSize*100)+"%)"
+		print (ruleStr)
 
 	if DEBUG:
 		# log = open("./log.txt", "w")
